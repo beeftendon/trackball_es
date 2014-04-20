@@ -1,0 +1,15 @@
+PARAMS	13	
+EPOCHS	2	
+Stimulus.stimtype	129	130
+Stimulus.duration	3	3
+Stimulus.spacing	10	10
+Stimulus.tau	0.5	0.5
+Stimulus.arenasize	100	100
+Stimulus.tau2	0.1	0.1
+Stimulus.startpos1	190	180
+Stimulus.startpos2	170	140
+Stimulus.startpos3	100	105
+Stimulus.startpos4	140	55
+Stimulus.startpos5	10	0
+Stimulus.startpos6	-10	-40
+Stimulus.width	10	10

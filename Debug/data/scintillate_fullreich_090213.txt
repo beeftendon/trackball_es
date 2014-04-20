@@ -1,0 +1,31 @@
+PARAMS	29								
+EPOCHS	9								
+Stimulus.stimtype	31	34	34	31	31	31	31	4	4
+Stimulus.lum	0.05	0.05	0.05	0.05	0.05	0.5	0.5	0.5	0.5
+Stimulus.contrast	1	19	19	1	1	1	1	1	1
+Stimulus.duration	0.2	1	1	1	1	1	1	0.2	0.2
+Stimulus.transgain	0	0	0	0	0	0	0	0	0
+Stimulus.rotgain	0	0	0	0	0	0	0	0	0
+Stimulus.trans.mean	0	0	0	0	0	0	0	0	0
+Stimulus.trans.amp	0	0	0	0	0	0	0	0	0
+Stimulus.trans.per	1	1	1	1	1	1	1	1	1
+Stimulus.trans.phase	1	1	1	1	1	1	1	0	0
+Stimulus.rot.mean	0	0	0	0	0	0	0	0	0
+Stimulus.rot.amp	0	0	0	0	0	0	0	0	0
+Stimulus.rot.per	1	1	1	1	1	1	1	1	1
+Stimulus.rot.phase	0	0	0	0	0	0	0	0	0
+Stimulus.stimtrans.mean	0	0	0	0	0	0	0	360	-360
+Stimulus.stimtrans.amp	0	0	0	0	0	0	0	0	0
+Stimulus.stimtrans.per	1	1	1	1	1	1	1	1	1
+Stimulus.stimtrans.phase	0	0	0	0	0	0	0	0	0
+Stimulus.stimrot.mean	0	0	0	0	0	0	0	0	0
+Stimulus.stimrot.amp	0	0	0	0	0	0	0	0	0
+Stimulus.stimrot.per	0.5	0.5	0.5	0.5	0.5	0.5	0.5	1	1
+Stimulus.stimrot.phase	0	0	0	0	0	0	0	0	0
+Stimulus.spacing	8	8	8	8	8	8	8	30	30
+Stimulus.density	0.1	0.1	0.1	0.1	0.1	0.1	0.1	0.5	0.5
+Stimulus.tau	5	5	5	5	5	5	5	0.3	0.3
+Stimulus.arenasize	100	100	100	100	100	100	100	100	100
+Stimulus.arenaheight	10	10	10	10	10	10	10	30	30
+Stimulus.spacing2	0	5	-5	5	-5	5	-5	0	0
+Stimulus.tau2	0	0.8	0.8	0.8	0.8	0.8	0.8	0	0
