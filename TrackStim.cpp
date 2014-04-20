@@ -10153,10 +10153,10 @@ void TrackStim::drawStarField(float tc)
 {
 	int ii;
 	static bool FIRST = true;
-#define X_MAX 5
-#define Y_MAX 5
+#define X_MAX 3
+#define Y_MAX 3
 	static std::vector<StarClass::Star> stars;
-	float imagedata[X_MAX * Y_MAX * 3] = { 0.0f };
+	float imagedata[X_MAX * Y_MAX * 3] = { 0.5f };
 	static float imagetime[X_MAX * Y_MAX] = { 0.0f };
 	static int x_next = 0;
 	static int y_next = 0;
@@ -10166,7 +10166,7 @@ void TrackStim::drawStarField(float tc)
 	float dtime = 0.5; // seconds between transition
 	float startwidth = Stimulus.spacing; // starts at 2 degrees, 1/2 thickness of the bars?
 
-	
+	/*
 	if (FIRST)
 	{
 		stars.resize(1);
@@ -10174,8 +10174,8 @@ void TrackStim::drawStarField(float tc)
 
 		generateNextStar(stars[0]);
 
-		x_curr = stars[0].x;
-		y_curr = stars[0].y;
+		x_curr = 1; // stars[0].x;
+		y_curr = 1; // stars[0].y;
 
 		for (int xi = 0; xi < X_MAX; xi++)
 		{
@@ -10183,15 +10183,15 @@ void TrackStim::drawStarField(float tc)
 			{
 				if (xi == x_curr && yi == y_curr)
 				{
-					imagedata[3 * (xi + yi * X_MAX) + 0] = foregroundtriple[0];
-					imagedata[3 * (xi + yi * X_MAX) + 1] = foregroundtriple[1];
-					imagedata[3 * (xi + yi * X_MAX) + 2] = foregroundtriple[2];
+					imagedata[3 * (xi + yi * X_MAX) + 0] = 0.0f; // foregroundtriple[0];
+					imagedata[3 * (xi + yi * X_MAX) + 1] = 0.0f; // foregroundtriple[1];
+					imagedata[3 * (xi + yi * X_MAX) + 2] = 1.0f; // foregroundtriple[2];
 				}
 				else
 				{
-					imagedata[3 * (xi + yi * X_MAX) + 0] = 0.0; // backgroundtriple[0];
-					imagedata[3 * (xi + yi * X_MAX) + 1] = 0.5; // backgroundtriple[1];
-					imagedata[3 * (xi + yi * X_MAX) + 2] = 0.5; // backgroundtriple[2];
+					imagedata[3 * (xi + yi * X_MAX) + 0] = 0.5f; // backgroundtriple[0];
+					imagedata[3 * (xi + yi * X_MAX) + 1] = 0.5f; // backgroundtriple[1];
+					imagedata[3 * (xi + yi * X_MAX) + 2] = 0.5f; // backgroundtriple[2];
 				}
 			}
 		}
@@ -10211,7 +10211,7 @@ void TrackStim::drawStarField(float tc)
 		{
 
 			generateNextStar(stars[0]);
-			x_curr = 1; //stars[0].x;
+			x_curr = 1; // stars[0].x;
 			y_curr = 1; // stars[0].y;
 
 			imagetime[x_curr + y_curr * 2] = dtime;
@@ -10223,20 +10223,20 @@ void TrackStim::drawStarField(float tc)
 			{
 				if (xi == x_curr && yi == y_curr)
 				{
-					imagedata[3 * (xi + yi * X_MAX) + 0] = foregroundtriple[0];
-					imagedata[3 * (xi + yi * X_MAX) + 1] = foregroundtriple[1];
-					imagedata[3 * (xi + yi * X_MAX) + 2] = foregroundtriple[2];
+					imagedata[3 * (xi + yi * X_MAX) + 0] = 0.0f; // foregroundtriple[0];
+					imagedata[3 * (xi + yi * X_MAX) + 1] = 0.0f; // foregroundtriple[1];
+					imagedata[3 * (xi + yi * X_MAX) + 2] = 1.0f; // foregroundtriple[2];
 				}
 				else
 				{
-					imagedata[3 * (xi + yi * X_MAX) + 0] = 0.0;// backgroundtriple[0];
-					imagedata[3 * (xi + yi * X_MAX) + 1] = 0.5;// backgroundtriple[1];
-					imagedata[3 * (xi + yi * X_MAX) + 2] = 0.5;// backgroundtriple[2];
+					imagedata[3 * (xi + yi * X_MAX) + 0] = 0.5f;// backgroundtriple[0];
+					imagedata[3 * (xi + yi * X_MAX) + 1] = 0.5f;// backgroundtriple[1];
+					imagedata[3 * (xi + yi * X_MAX) + 2] = 0.5f;// backgroundtriple[2];
 				}
 			}
 		}
 	}
-
+	*/
 	glClearColor(meangroundtriple[0], meangroundtriple[1], meangroundtriple[2], 0);
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -10247,14 +10247,14 @@ void TrackStim::drawStarField(float tc)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, X_MAX, Y_MAX, 0, GL_RGB, GL_FLOAT, imagedata);
+ 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, X_MAX, Y_MAX, 0, GL_RGB, GL_FLOAT, imagedata);
 
 	float testwidth = 1.5;
 	float testheight = 1.5;
 	float testdepth = -2;
 
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, 1);
+	//glEnable(GL_TEXTURE_2D);
+	//glBindTexture(GL_TEXTURE_2D, 1);
 	glBegin(GL_QUADS);
 		// tl
 		// bl
@@ -10268,7 +10268,7 @@ void TrackStim::drawStarField(float tc)
 	glVertex3f(testwidth, 0.0f, testdepth);
 	glTexCoord2f(1.0f, 1.0f); //glTexCoord2f((float)X_MAX - 1, (float)Y_MAX - 1);
 	glVertex3f(testwidth, testheight, testdepth);
-
+		
 		// glVertex3f(0.0f, testheight, 1.f);
 		// glVertex3f(testwidth, testheight, 1.f);
 		// glVertex3f(testwidth, 0.0f, 1.f);
