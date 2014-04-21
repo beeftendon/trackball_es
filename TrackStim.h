@@ -6,6 +6,7 @@
 #include <stdio.h>			// Header File For Standard Input/Output
 #include <string>
 #include <vector>
+#include <algorithm>
 //#include <iostream>
 using namespace std;
 #include <gl\gl.h>			// Header File For The OpenGL32 Library
