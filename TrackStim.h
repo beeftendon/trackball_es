@@ -6,6 +6,7 @@
 #include <stdio.h>			// Header File For Standard Input/Output
 #include <string>
 #include <vector>
+#include <list>
 #include <algorithm>
 //#include <iostream>
 using namespace std;
@@ -100,27 +101,104 @@ public:
 		// Constructor
 		StarClass()
 		{
-			starArray.resize(2);
+			maxStars = 1;
+			starCount = 0;
+			xMax = 5;
+			yMax = 5;
 		};
 
-		static int starCount; // Number of stars
+		int starCount; // Number of stars
+		int maxStars; // Total number of stars allowed
+		float timeToNewStar = -1;
+
+		int xMax;
+		int yMax;
 
 		struct Star
 		{
-			float timeToDeath = 0; // seconds, the star is destroyed when it reaches 0
-			int generation = 0; // Determines if it's the first or second of star pair
+			float timeToDeath = 0; // seconds, the star's generation counter is decremented when this reaches 0
+			int generationsRemaining = 0; // Determines if it's the first or second of star pair
 
 			// Position of star
 			float x = 0;
 			float y = 0;
-			float z = 0;
 
 			// Size of star
 			float xdim = 0;
 			float ydim = 0;
 		};
+
+		void updateStars(float dt)
+		{
+			// Argument: time delta in seconds
+
+			// Generate a new star if there's still space and 
+			// TODO: Actually implement the timer
+			if (starCount < maxStars && timeToNewStar <= 0)
+			{
+				generateRandomStar();
+			};
+			
+			// Decrements timer and updates generation and position if necessary
+			Star star;
+			for (std::list<Star>::iterator it = starList.begin(); it != starList.end();)
+			{
+				// IMPORTANT: This whole thing assumes that all stars have the same overall lifespan, which is why I used a linked list
+				// Elements will always be popped in order because the first element will always be the oldest or tied for oldest
+
+				star = *it;
+
+				star.timeToDeath -= dt;
+
+				if (star.timeToDeath <= 0)
+				{
+					star.generationsRemaining--;
+
+					// Destroy stars with no generations remaining
+					if (star.generationsRemaining < 0)
+					{
+						it = starList.erase(it);
+						starCount--;
+					}
+					else
+					{
+						*it = star;
+						++it;
+					};
+				}
+				else
+				{
+					*it = star;
+					++it;
+				};
+			};
+		};
 		
-		std::vector<Star> starArray;
+		void updateStarGenerations()
+		{
+			/*
+			  Decrements generation and resets timer if needed
+			  Or just destroys a star if it's generations have run out
+			*/
+		};
+
+		void generateRandomStar()
+		{
+			Star newStar;
+
+			newStar.x = rand() % xMax;
+			newStar.y = rand() % yMax;
+
+			newStar.timeToDeath = 1.0;
+			newStar.generationsRemaining = 0; // For now I'm just trying to draw a single dot that hops around
+
+			starList.push_back(newStar);
+			starCount++;
+		};
+
+		std::list<Star> starList;
+		
+	private:
 	};
 
 private:

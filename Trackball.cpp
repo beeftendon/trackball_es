@@ -540,7 +540,8 @@ int WINAPI WinMain(	HINSTANCE	hInstance,			// Instance
 	TrackStim::STIMPARAMS * AllStimsTemp;
 	float	currtime;
 	
-	
+	srand(time(0));
+
 	// Ask The User Which Screen Mode They Prefer
 	/*if (MessageBox(NULL,"Would You Like To Run In Fullscreen Mode?", "Start FullScreen?",MB_YESNO|MB_ICONQUESTION)==IDNO)
 	{

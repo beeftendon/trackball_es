@@ -10155,7 +10155,7 @@ void TrackStim::drawStarField(float tc)
 	static bool FIRST = true;
 #define X_MAX 5
 #define Y_MAX 5
-	static std::vector<StarClass::Star> stars;
+	static StarClass stars;
 	float imagedata[X_MAX * Y_MAX * 3];
 	static float imagetime[X_MAX * Y_MAX] = { 0.0f };
 	static int x_next = 0;
@@ -10168,10 +10168,9 @@ void TrackStim::drawStarField(float tc)
 
 	if (FIRST)
 	{
-		stars.resize(1);
 		last_tc = tc;
 
-		generateNextStar(stars[0]);
+		stars.generateRandomStar();
 
 		x_curr = 1; // stars[0].x;
 		y_curr = 1; // stars[0].y;
@@ -10181,8 +10180,10 @@ void TrackStim::drawStarField(float tc)
 		FIRST = false;
 	}
 
+	// UPDATE
 	if (tc - last_tc > 0.001)
 	{
+		stars.updateStars(tc - last_tc);
 		imagetime[x_curr + y_curr * 2] -= tc - last_tc;
 
 		last_tc = tc;
@@ -10190,7 +10191,7 @@ void TrackStim::drawStarField(float tc)
 		if (imagetime[x_curr + y_curr * 2] <= 0)
 		{
 
-			generateNextStar(stars[0]);
+			// generateNextStar(stars[0]);
 			x_curr = 1; // stars[0].x;
 			y_curr = 1; // stars[0].y;
 
@@ -10202,17 +10203,21 @@ void TrackStim::drawStarField(float tc)
 	{
 		for (int yi = 0; yi < Y_MAX; yi++)
 		{
-			if (xi == x_curr && yi == y_curr)
+			for (std::list<TrackStim::StarClass::Star>::iterator it = stars.starList.begin(); it != stars.starList.end(); ++it)
 			{
-				imagedata[3 * (xi + yi * X_MAX) + 0] = foregroundtriple[0];
-				imagedata[3 * (xi + yi * X_MAX) + 1] = foregroundtriple[1];
-				imagedata[3 * (xi + yi * X_MAX) + 2] = foregroundtriple[2];
-			}
-			else
-			{
-				imagedata[3 * (xi + yi * X_MAX) + 0] = backgroundtriple[0];
-				imagedata[3 * (xi + yi * X_MAX) + 1] = backgroundtriple[1];
-				imagedata[3 * (xi + yi * X_MAX) + 2] = backgroundtriple[2];
+				TrackStim::StarClass::Star star = *it;
+				if (xi == star.x && yi == star.y)
+				{
+					imagedata[3 * (xi + yi * X_MAX) + 0] = foregroundtriple[0];
+					imagedata[3 * (xi + yi * X_MAX) + 1] = foregroundtriple[1];
+					imagedata[3 * (xi + yi * X_MAX) + 2] = foregroundtriple[2];
+				}
+				else
+				{
+					imagedata[3 * (xi + yi * X_MAX) + 0] = backgroundtriple[0];
+					imagedata[3 * (xi + yi * X_MAX) + 1] = backgroundtriple[1];
+					imagedata[3 * (xi + yi * X_MAX) + 2] = backgroundtriple[2];
+				}
 			}
 		}
 	}
