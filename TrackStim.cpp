@@ -10203,23 +10203,19 @@ void TrackStim::drawStarField(float tc)
 	{
 		for (int yi = 0; yi < Y_MAX; yi++)
 		{
-			for (std::list<TrackStim::StarClass::Star>::iterator it = stars.starList.begin(); it != stars.starList.end(); ++it)
-			{
-				TrackStim::StarClass::Star star = *it;
-				if (xi == star.x && yi == star.y)
-				{
-					imagedata[3 * (xi + yi * X_MAX) + 0] = foregroundtriple[0];
-					imagedata[3 * (xi + yi * X_MAX) + 1] = foregroundtriple[1];
-					imagedata[3 * (xi + yi * X_MAX) + 2] = foregroundtriple[2];
-				}
-				else
-				{
-					imagedata[3 * (xi + yi * X_MAX) + 0] = backgroundtriple[0];
-					imagedata[3 * (xi + yi * X_MAX) + 1] = backgroundtriple[1];
-					imagedata[3 * (xi + yi * X_MAX) + 2] = backgroundtriple[2];
-				}
-			}
+			imagedata[3 * (xi + yi * X_MAX) + 0] = backgroundtriple[0];
+			imagedata[3 * (xi + yi * X_MAX) + 1] = backgroundtriple[1];
+			imagedata[3 * (xi + yi * X_MAX) + 2] = backgroundtriple[2];
 		}
+	}
+
+	for (std::list<TrackStim::StarClass::Star>::iterator it = stars.starList.begin(); it != stars.starList.end(); ++it)
+	{
+		TrackStim::StarClass::Star star = *it;
+
+		imagedata[3 * (star.x + star.y * X_MAX) + 0] = foregroundtriple[0];
+		imagedata[3 * (star.x + star.y * X_MAX) + 1] = foregroundtriple[1];
+		imagedata[3 * (star.x + star.y * X_MAX) + 2] = foregroundtriple[2];
 	}
 	
 	glClearColor(meangroundtriple[0], meangroundtriple[1], meangroundtriple[2], 0);
@@ -10253,18 +10249,7 @@ void TrackStim::drawStarField(float tc)
 	glVertex3f(testwidth, 0.0f, testdepth);
 	glTexCoord2f(1.0f, 1.0f); //glTexCoord2f((float)X_MAX - 1, (float)Y_MAX - 1);
 	glVertex3f(testwidth, testheight, testdepth);
-		
-		// glVertex3f(0.0f, testheight, 1.f);
-		// glVertex3f(testwidth, testheight, 1.f);
-		// glVertex3f(testwidth, 0.0f, 1.f);
-		// glVertex3f(0.0f, 0.0f, 1.f);
-		
-		/*
-		glVertex3f(28.0f, 10.3f, 0.0f);
-		glVertex3f(25.0f, 15.0f, 0.0f);
-		glVertex3f(28.0f, 10.3f, 300.0f);
-		glVertex3f(25.0f, 15.0f, 300.0f);
-		*/
+
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 

@@ -101,7 +101,7 @@ public:
 		// Constructor
 		StarClass()
 		{
-			maxStars = 1;
+			maxStars = 4;
 			starCount = 0;
 			xMax = 5;
 			yMax = 5;
@@ -120,8 +120,8 @@ public:
 			int generationsRemaining = 0; // Determines if it's the first or second of star pair
 
 			// Position of star
-			float x = 0;
-			float y = 0;
+			int x = 0;
+			int y = 0;
 
 			// Size of star
 			float xdim = 0;
@@ -185,12 +185,42 @@ public:
 		void generateRandomStar()
 		{
 			Star newStar;
+			int newX;
+			int newY;
 
-			newStar.x = rand() % xMax;
-			newStar.y = rand() % yMax;
+			if (starCount > 0)
+			{
+				Star star;
+				bool conflictExists = true;
+				while (conflictExists)
+				{
+					newX = rand() % xMax;
+					newY = rand() % yMax;
+
+					conflictExists = false; // This will stay false if there are no conflicts
+					for (std::list<Star>::iterator it = starList.begin(); it != starList.end(); ++it)
+					{
+						star = *it;
+
+						if (newX == star.x && newY == star.y)
+						{
+							conflictExists = true; // Reset flag and continue looking for a new position
+							break;
+						}
+					}
+				}
+			}
+			else
+			{
+				newX = rand() % xMax;
+				newY = rand() % yMax;
+			};
+
+			newStar.x = newX;
+			newStar.y = newY;
 
 			newStar.timeToDeath = 1.0;
-			newStar.generationsRemaining = 0; // For now I'm just trying to draw a single dot that hops around
+			newStar.generationsRemaining = 0; // For now I'm just trying to draw a single dot that hops around without any pattern
 
 			starList.push_back(newStar);
 			starCount++;
