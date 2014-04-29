@@ -102,15 +102,20 @@ public:
 		StarClass()
 		{
 			maxStars = 4;
-			starCount = 0;
 			xMax = 5;
 			yMax = 5;
+
+			for (int ii = 0; ii < xMax*yMax; ii++)
+			{
+				freeList.push_back(ii);
+			}
 		};
 
-		int starCount; // Number of stars
 		int maxStars; // Total number of stars allowed
 		float timeToNewStar = -1;
-
+		list<int> freeList; // The numbers on this list are positions that are free to be populated by new stars
+		list<int> orphanList; // List of positions which have been broken up in a way such that they cannot be populated until
+							  // adjacent positions are restored
 		int xMax;
 		int yMax;
 
@@ -134,7 +139,7 @@ public:
 
 			// Generate a new star if there's still space and 
 			// TODO: Actually implement the timer
-			if (starCount < maxStars && timeToNewStar <= 0)
+			if (starList.size() < maxStars && timeToNewStar <= 0)
 			{
 				generateRandomStar();
 			};
@@ -157,8 +162,26 @@ public:
 					// Destroy stars with no generations remaining
 					if (star.generationsRemaining < 0)
 					{
+						int freedPos = star.x + star.y*xMax;
+						
+						if (freeList.back() < freedPos)
+						{
+							freeList.push_back(freedPos);
+						}
+						else
+						{
+							for (std::list<int>::iterator freeIt = freeList.begin(); freeIt != freeList.end(); ++freeIt)
+							{
+								int freeInt = *freeIt;
+								if (freeInt > freedPos)
+								{
+									freeList.insert(freeIt, freedPos);
+									break;
+								};
+							};
+						};
+
 						it = starList.erase(it);
-						starCount--;
 					}
 					else
 					{
@@ -185,9 +208,8 @@ public:
 		void generateRandomStar()
 		{
 			Star newStar;
-			int newX;
-			int newY;
 
+			/*
 			if (starCount > 0)
 			{
 				Star star;
@@ -216,17 +238,43 @@ public:
 				newY = rand() % yMax;
 			};
 
-			newStar.x = newX;
-			newStar.y = newY;
+			*/
 
-			newStar.timeToDeath = 1.0;
-			newStar.generationsRemaining = 0; // For now I'm just trying to draw a single dot that hops around without any pattern
+			int newPos;
+			int newY;
+			int newX;
 
-			starList.push_back(newStar);
-			starCount++;
+			int unfreedListInd = rand() % freeList.size();
+			int counter = 0;
+			for (list<int>::iterator newPosIt = freeList.begin(); newPosIt != freeList.end(); ++newPosIt)
+			{
+				if (counter == unfreedListInd)
+				{
+					newPos = *newPosIt; // Position if XY coords were "unraveled"
+					newY = newPos / xMax;
+					newX = newPos % xMax;
+
+					newStar.x = newX;
+					newStar.y = newY;
+
+					newStar.timeToDeath = 1.0;
+					newStar.generationsRemaining = 0; // For now I'm just trying to draw a single dot that hops around without any pattern
+
+					starList.push_back(newStar);
+
+					freeList.erase(newPosIt);
+
+					break;
+				}
+
+				counter++;
+			}
+
+
+			return;
 		};
 
-		std::list<Star> starList;
+		list<Star> starList;
 		
 	private:
 	};
