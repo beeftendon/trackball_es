@@ -98,7 +98,7 @@ public:
 	class StarClass
 	{
 	public:
-		// Constructor
+		// Constructors
 		StarClass()
 		{
 			maxStars = 4;
@@ -111,13 +111,41 @@ public:
 			}
 		};
 
+		StarClass(int numStars)
+		{
+			xMax = 5;
+			yMax = 5;
+
+			for (int ii = 0; ii < xMax*yMax; ii++)
+			{
+				freeList.push_back(ii);
+			};
+
+			maxStars = numStars;
+		};
+
 		int maxStars; // Total number of stars allowed
-		float timeToNewStar = -1;
+		float timeToNewStar = 0.2;
 		list<int> freeList; // The numbers on this list are positions that are free to be populated by new stars
 		list<int> orphanList; // List of positions which have been broken up in a way such that they cannot be populated until
 							  // adjacent positions are restored
 		int xMax;
 		int yMax;
+
+		void resize(int newStarNum)
+		{
+			// This still isn't workin properly
+
+
+			maxStars = newStarNum;
+
+			freeList.clear();
+			starList.clear();
+			for (int ii = 0; ii < maxStars; ii++)
+			{
+				freeList.push_back(ii);
+			}
+		}
 
 		struct Star
 		{
@@ -138,8 +166,9 @@ public:
 			// Argument: time delta in seconds
 
 			// Generate a new star if there's still space and 
-			// TODO: Actually implement the timer
-			if (starList.size() < maxStars && timeToNewStar <= 0)
+			
+			timeToNewStar -= dt;
+			if (starList.size() < maxStars && timeToNewStar <= 0)// || starList.size() < maxStars/2)
 			{
 				generateRandomStar();
 			};
@@ -158,6 +187,10 @@ public:
 				if (star.timeToDeath <= 0)
 				{
 					star.generationsRemaining--;
+					if (star.generationsRemaining == 1)
+						star.timeToDeath = 0.2; // Reset timer for new generation
+					else
+						star.timeToDeath = 0.5;
 
 					// Destroy stars with no generations remaining
 					if (star.generationsRemaining < 0)
@@ -248,6 +281,9 @@ public:
 			int counter = 0;
 			for (list<int>::iterator newPosIt = freeList.begin(); newPosIt != freeList.end(); ++newPosIt)
 			{
+				// Iterate through the list of free positions (positions that can be populated)
+				// stop on the randomly generated position and put the new star there
+
 				if (counter == unfreedListInd)
 				{
 					newPos = *newPosIt; // Position if XY coords were "unraveled"
@@ -257,12 +293,14 @@ public:
 					newStar.x = newX;
 					newStar.y = newY;
 
-					newStar.timeToDeath = 1.0;
-					newStar.generationsRemaining = 0; // For now I'm just trying to draw a single dot that hops around without any pattern
+					newStar.timeToDeath = 0.5;
+					newStar.generationsRemaining = 2;
 
 					starList.push_back(newStar);
 
-					freeList.erase(newPosIt);
+					freeList.erase(newPosIt); // The position is no longer free, remove it
+											  // TODO: Erase all the positions between this one and where it will be in 2 generations
+											  // TODO: Also erase any orphaned spaces
 
 					break;
 				}
@@ -270,7 +308,7 @@ public:
 				counter++;
 			}
 
-
+			timeToNewStar = 0.1;
 			return;
 		};
 

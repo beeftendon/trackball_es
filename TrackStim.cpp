@@ -10155,7 +10155,7 @@ void TrackStim::drawStarField(float tc)
 	static bool FIRST = true;
 #define X_MAX 5
 #define Y_MAX 5
-	static StarClass stars;
+	static StarClass stars(1);
 	float imagedata[X_MAX * Y_MAX * 3];
 	static float imagetime[X_MAX * Y_MAX] = { 0.0f };
 	static int x_next = 0;
@@ -10213,9 +10213,20 @@ void TrackStim::drawStarField(float tc)
 	{
 		TrackStim::StarClass::Star star = *it;
 
-		imagedata[3 * (star.x + star.y * X_MAX) + 0] = foregroundtriple[0];
-		imagedata[3 * (star.x + star.y * X_MAX) + 1] = foregroundtriple[1];
-		imagedata[3 * (star.x + star.y * X_MAX) + 2] = foregroundtriple[2];
+		if (star.generationsRemaining == 1)
+		{
+			// Generation where nothing is shown
+			imagedata[3 * (star.x + star.y * X_MAX) + 0] = backgroundtriple[0];
+			imagedata[3 * (star.x + star.y * X_MAX) + 1] = backgroundtriple[1];
+			imagedata[3 * (star.x + star.y * X_MAX) + 2] = backgroundtriple[2];
+		}
+		else
+		{
+			// generationsRemaining == 2 or 0
+			imagedata[3 * (star.x + star.y * X_MAX) + 0] = foregroundtriple[0];
+			imagedata[3 * (star.x + star.y * X_MAX) + 1] = foregroundtriple[1];
+			imagedata[3 * (star.x + star.y * X_MAX) + 2] = foregroundtriple[2];
+		}
 	}
 	
 	glClearColor(meangroundtriple[0], meangroundtriple[1], meangroundtriple[2], 0);
@@ -10230,6 +10241,7 @@ void TrackStim::drawStarField(float tc)
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, X_MAX, Y_MAX, 0, GL_RGB, GL_FLOAT, imagedata);
 
+	
 	float testwidth = 1.5;
 	float testheight = 1.5;
 	float testdepth = -2;
@@ -10260,33 +10272,6 @@ void TrackStim::drawStarField(float tc)
 		TrackStim::drawWedge(ii*angle-startwidth/2+added,startwidth);
 	};*/
 };
-
-void TrackStim::updateStars(float tc, StarClass::Star star[])
-{
-	//for (int ii = 0; ii<)
-}
-
-void TrackStim::generateNextStar(StarClass::Star &star)
-{
-	bool conflict_exists = false;
-	float x_next;
-	float y_next;
-	float x_curr = star.x;
-	float y_curr = star.y;
-
-	conflict_exists = true;
-	while (conflict_exists)
-	{
-		x_next = rand() % (X_MAX - 1);
-		y_next = rand() % (Y_MAX);
-		if (y_next == y_curr && abs(x_next - x_curr) <= 1)
-			x_next = rand() % (X_MAX - 1);
-		else
-			conflict_exists = false;
-	}
-	star.x = x_next;
-	star.y = y_next;
-}
 
 /* Case 128
 */
