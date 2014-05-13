@@ -10155,7 +10155,7 @@ void TrackStim::drawStarField(float tc)
 	static bool FIRST = true;
 #define X_MAX 5
 #define Y_MAX 5
-	static StarClass stars(1);
+	static StarClass stars(5);
 	float imagedata[X_MAX * Y_MAX * 3];
 	static float imagetime[X_MAX * Y_MAX] = { 0.0f };
 	static int x_next = 0;

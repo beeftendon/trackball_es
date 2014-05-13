@@ -118,7 +118,8 @@ public:
 
 			for (int ii = 0; ii < xMax*yMax; ii++)
 			{
-				freeList.push_back(ii);
+				if (ii % xMax != xMax - 1)
+					freeList.push_back(ii);
 			};
 
 			maxStars = numStars;
@@ -156,9 +157,15 @@ public:
 			int x = 0;
 			int y = 0;
 
+			// Star's starting and ending positions
+			int xInit = 0;
+			int yInit = 0;
+			int xFinal = 0;
+			int yFinal = 0;
+
 			// Size of star
-			float xdim = 0;
-			float ydim = 0;
+			float xSize = 0;
+			float ySize = 0;
 		};
 
 		void updateStars(float dt)
@@ -188,27 +195,40 @@ public:
 				{
 					star.generationsRemaining--;
 					if (star.generationsRemaining == 1)
-						star.timeToDeath = 0.2; // Reset timer for new generation
+					{
+						star.timeToDeath = 0.0; // Reset timer for new generation
+						star.x++;
+					}
 					else
 						star.timeToDeath = 0.5;
 
 					// Destroy stars with no generations remaining
 					if (star.generationsRemaining < 0)
 					{
-						int freedPos = star.x + star.y*xMax;
+						int freedPos = star.xInit + star.yInit*xMax;
+						int freedPos2 = star.xFinal + star.yFinal*xMax;
 						
 						if (freeList.back() < freedPos)
 						{
-							freeList.push_back(freedPos);
+							while (freedPos <= freedPos2 && (freedPos + 1)%xMax != 0)
+							{
+								freeList.push_back(freedPos);
+								freedPos++;
+							}
 						}
 						else
 						{
-							for (std::list<int>::iterator freeIt = freeList.begin(); freeIt != freeList.end(); ++freeIt)
+							for (list<int>::iterator freeIter = freeList.begin(); freeIter != freeList.end(); ++freeIter)
 							{
-								int freeInt = *freeIt;
-								if (freeInt > freedPos)
+								if (*freeIter > freedPos)
 								{
-									freeList.insert(freeIt, freedPos);
+									while (freeIter != freeList.end() && freedPos <= freedPos2 && (freedPos + 1)%xMax != 0)
+									{
+										freeList.insert(freeIter, freedPos);
+										//freeIter++;
+										freedPos++;
+									}
+										
 									break;
 								};
 							};
@@ -242,74 +262,67 @@ public:
 		{
 			Star newStar;
 
-			/*
-			if (starCount > 0)
-			{
-				Star star;
-				bool conflictExists = true;
-				while (conflictExists)
-				{
-					newX = rand() % xMax;
-					newY = rand() % yMax;
-
-					conflictExists = false; // This will stay false if there are no conflicts
-					for (std::list<Star>::iterator it = starList.begin(); it != starList.end(); ++it)
-					{
-						star = *it;
-
-						if (newX == star.x && newY == star.y)
-						{
-							conflictExists = true; // Reset flag and continue looking for a new position
-							break;
-						}
-					}
-				}
-			}
-			else
-			{
-				newX = rand() % xMax;
-				newY = rand() % yMax;
-			};
-
-			*/
-
-			int newPos;
+			int newSpace;
 			int newY;
 			int newX;
 
-			int unfreedListInd = rand() % freeList.size();
+			int newSpaceListIndex = rand() % freeList.size();
 			int counter = 0;
-			for (list<int>::iterator newPosIt = freeList.begin(); newPosIt != freeList.end(); ++newPosIt)
+			for (list<int>::iterator newSpaceIter = freeList.begin(); newSpaceIter != freeList.end(); ++newSpaceIter)
 			{
 				// Iterate through the list of free positions (positions that can be populated)
 				// stop on the randomly generated position and put the new star there
 
-				if (counter == unfreedListInd)
+				if (counter == newSpaceListIndex)
 				{
-					newPos = *newPosIt; // Position if XY coords were "unraveled"
-					newY = newPos / xMax;
-					newX = newPos % xMax;
+					newSpace = *newSpaceIter; // Position if XY coords were "unraveled"
+					newY = indexToY(newSpace);
+					newX = indexToX(newSpace);
 
-					newStar.x = newX;
-					newStar.y = newY;
+					newStar.x = newStar.xInit = newX;
+					newStar.y = newStar.yInit = newY;
+					
+					// TODO: Make this dynamic
+					newStar.xFinal = newX + 1;
+					newStar.yFinal = newY;
 
 					newStar.timeToDeath = 0.5;
 					newStar.generationsRemaining = 2;
 
 					starList.push_back(newStar);
 
-					freeList.erase(newPosIt); // The position is no longer free, remove it
-											  // TODO: Erase all the positions between this one and where it will be in 2 generations
+					int finalIndex = xyToIndex(newStar.xFinal, newStar.yFinal);
+					while (newSpaceIter != freeList.end() && *newSpaceIter <= finalIndex)
+					{
+						newSpaceIter = freeList.erase(newSpaceIter); // The positions are no longer free, remove it
 											  // TODO: Also erase any orphaned spaces
+					}
 
+
+
+					timeToNewStar = 0.1;
 					break;
 				}
 
 				counter++;
 			}
 
-			timeToNewStar = 0.1;
 			return;
+		};
+
+		int xyToIndex(int x, int y)
+		{
+			return x + y*xMax;
+		};
+
+		int indexToX(int index)
+		{
+			return index % xMax;
+		};
+
+		int indexToY(int index)
+		{
+			return index / xMax;
 		};
 
 		list<Star> starList;
